@@ -1,13 +1,11 @@
 package com.doudou.cn.testtrainplanassetpro;
 
-import android.nfc.Tag;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
 import com.doudou.cn.utils.DayTrainPlan;
-import com.doudou.cn.utils.ReplaceXmlDataTools;
 import com.doudou.cn.utils.RessourceUtils;
 import com.doudou.cn.utils.RunRemind;
 import com.doudou.cn.utils.SAXUtils;
@@ -16,12 +14,8 @@ import com.doudou.cn.xml.XmlTools;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
-import javax.security.auth.login.LoginException;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -94,14 +88,44 @@ public class MainActivity extends AppCompatActivity {
                     public void run() {
 //                        List<TrainPlan> listTrainPlan =
 //                                SAXUtils.getTrainPlanFromXml(MainActivity.this, RessourceUtils.TRAIN_PLAN_CATEGORY);
-
-                        ReplaceXmlDataTools.replaceXmlDataTrainPlan(MainActivity.this,null,"train_plan_category_xinshou.xml");
+//                        ReplaceXmlDataTools.replaceXmlDataTrainPlan(MainActivity.this,null,"train_plan_category_xinshou.xml");
+                        String[] filename = new String[]{
+                                "train_plan_category",
+                                "train_plan_category_5km",
+                                "train_plan_category_10km",
+                                "train_plan_category_banma",
+                                "train_plan_category_quanma",
+                                "train_plan_category_xinshou",
+                                "train_plan_runtype_writecopy"
+                        } ;
+                        for (int i = 0; i < filename.length; i++) {
+                            taiwaiTrainfor(filename[i]);
+                        }
                     }
                 }).start();
-
             }
         });
+    }
 
+    private void taiwaiTrainfor(String trainforFileName){
+
+        List<String> templateListData = SAXUtils.getMapFromReouceString(MainActivity.this, "template_strings.xml");
+        List<String> listZhData = SAXUtils.getMapFromReouceString(MainActivity.this,"strings.xml");
+        Log.i(TAG," templateSize:"+ templateListData.size() +",listSize:"+ listZhData.size());
+        String result = SAXUtils.getStringFromXmlByName(MainActivity.this ,"db/"+trainforFileName+".xml");
+        Log.i(TAG,"resultSize:"+result.length());
+        for (int i = 0; i < templateListData.size() ;i++) {
+            try{
+                Log.i(TAG,listZhData.get(i) +"---->"+ templateListData.get(i));
+                result = result.replaceAll(listZhData.get(i).trim().toString(),templateListData.get(i));
+
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+        Log.i(TAG,"resultAfter:"+ result);
+        // write content to file ;
+        SAXUtils.writeStringToFile(MainActivity.this,result,trainforFileName+".xml");
     }
 
 
@@ -193,16 +217,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-
-
-
-
-//        runOnUiThread(new Runnable() {
-//            @Override
-//            public void run() {
-//
-//            }
-//        });
 
 
     }

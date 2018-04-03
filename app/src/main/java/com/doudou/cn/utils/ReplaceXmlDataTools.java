@@ -227,7 +227,6 @@ public class ReplaceXmlDataTools {
         ) ;
         File currnetXmlFile = new File(dbPath) ;
 
-
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder;
         try {
@@ -235,7 +234,7 @@ public class ReplaceXmlDataTools {
             Document doc = dBuilder.parse(currnetXmlFile);
             doc.getDocumentElement().normalize();
 
-            // update mode 
+            // update mode
             updateTrainPlanZhToCha(doc);
             doc.getDocumentElement().normalize();
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
